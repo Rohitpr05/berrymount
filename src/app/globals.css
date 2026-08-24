@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+@theme {
+  /* Deep plum — primary dark surface */
+  --color-plum-950: #170b1b;
+  --color-plum-900: #211026;
+  --color-plum-850: #2a1530;
+  --color-plum-800: #341a3c;
+  --color-plum-700: #452451;
+  --color-plum-600: #593268;
+
+  /* Warm cream — primary light surface */
+  --color-cream-50: #fdf9f2;
+  --color-cream-100: #f8f0e2;
+  --color-cream-200: #f0e4cd;
+  --color-cream-300: #e5d3b1;
+
+  /* Champagne gold — accents only */
+  --color-gold-300: #e7cd97;
+  --color-gold-400: #d7bf85;
+  --color-gold-500: #c6a15a;
+  --color-gold-600: #ab8543;
+  --color-gold-700: #8a6733;
+
+  /* Natural berry accents — used sparingly, never as UI chrome */
+  --color-berry-strawberry: #b3273f;
+  --color-berry-blueberry: #38477d;
+  --color-berry-raspberry: #a12c53;
+  --color-berry-blackberry: #33203c;
+
+  --color-ink: #1c1220;
+
+  --font-serif: var(--font-fraunces), "Iowan Old Style", "Palatino Linotype", serif;
+  --font-sans: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
+
+  --container-page: 84rem;
+
+  --animate-fade-up: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-marquee: marquee 40s linear infinite;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+* {
+  border-color: var(--color-cream-300);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-cream-50);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+::selection {
+  background: var(--color-gold-500);
+  color: var(--color-plum-950);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
