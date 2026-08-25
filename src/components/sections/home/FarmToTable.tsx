@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap } from "@/lib/gsap";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -27,17 +27,13 @@ function PinnedJourney() {
   const layerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const lineRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
-    // Sibling sections above this one (e.g. the berry showcase) swap into a
-    // taller pinned layout via their own post-paint effect. Creating this
-    // trigger in the same tick can measure the DOM before that swap lands,
-    // baking in a stale "top top" start that ScrollTrigger.refresh() alone
-    // doesn't correct. Deferring one tick settles against the final layout.
     let ctx: gsap.Context | undefined;
-    const timer = setTimeout(() => {
+
+    function create() {
       ctx = gsap.context(() => {
         const layers = layerRefs.current.filter(Boolean) as HTMLDivElement[];
         gsap.set(layers, { opacity: 0 });
@@ -66,11 +62,43 @@ function PinnedJourney() {
         if (lineRef.current) {
           tl.to(lineRef.current, { scaleX: 1, ease: "none", duration: layers.length }, 0);
         }
-      }, section);
-    }, 100);
+      }, section!);
+    }
+
+    // A sibling section above this one may swap into a taller pinned layout
+    // via its own post-paint effect. Creating this trigger before that
+    // swap lands bakes in a stale "top top" start. Rather than guess a
+    // fixed delay (which can race the swap and corrupt cleanup on fast
+    // route changes), wait for that pin-spacer to actually exist in the
+    // DOM, with a short timeout fallback for when nothing above pins at all
+    // (e.g. mobile, where the berry showcase never enters its pinned mode).
+    let settled = false;
+    let cancelled = false;
+    const settle = () => {
+      if (settled) return;
+      settled = true;
+      observer.disconnect();
+      // Let the spacer's height finish resolving before measuring against it.
+      requestAnimationFrame(() => {
+        if (cancelled) return;
+        requestAnimationFrame(() => {
+          if (!cancelled) create();
+        });
+      });
+    };
+
+    const observer = new MutationObserver(() => {
+      if (document.querySelector(".pin-spacer")) settle();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    if (document.querySelector(".pin-spacer")) settle();
+    const fallback = setTimeout(settle, 600);
 
     return () => {
-      clearTimeout(timer);
+      cancelled = true;
+      observer.disconnect();
+      clearTimeout(fallback);
       ctx?.revert();
     };
   }, []);
