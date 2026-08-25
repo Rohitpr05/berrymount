@@ -1,3 +1,6 @@
+"use client";
+
+import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
@@ -12,11 +15,29 @@ const accentBg: Record<Berry["accent"], string> = {
 };
 
 export function ProductCard({ berry, className }: { berry: Berry; className?: string }) {
+  const ref = useRef<HTMLAnchorElement>(null);
+
+  function onMouseMove(e: React.MouseEvent<HTMLAnchorElement>) {
+    const el = ref.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const rect = el.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    el.style.transform = `perspective(900px) rotateX(${-py * 8}deg) rotateY(${px * 8}deg)`;
+  }
+
+  function onMouseLeave() {
+    if (ref.current) ref.current.style.transform = "perspective(900px) rotateX(0deg) rotateY(0deg)";
+  }
+
   return (
     <Link
+      ref={ref}
       href={`/berries/${berry.slug}`}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
       className={cn(
-        "group relative flex aspect-3/4 flex-col justify-end overflow-hidden rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-500",
+        "group relative flex aspect-3/4 flex-col justify-end overflow-hidden rounded-2xl transition-transform duration-300 ease-out will-change-transform focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-500",
         className,
       )}
     >

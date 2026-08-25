@@ -1,5 +1,5 @@
 import { Hero } from "@/components/sections/home/Hero";
-import { OurBerries } from "@/components/sections/home/OurBerries";
+import { BerryShowcase } from "@/components/sections/home/BerryShowcase";
 import { OurStory } from "@/components/sections/home/OurStory";
 import { FarmToTable } from "@/components/sections/home/FarmToTable";
 import { Quality } from "@/components/sections/home/Quality";
@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <OurBerries />
+      <BerryShowcase />
       <OurStory />
       <FarmToTable />
       <Quality />

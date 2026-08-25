@@ -3,6 +3,7 @@ import { MapPin } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/motion/Reveal";
+import { SplitReveal } from "@/components/motion/SplitReveal";
 import { images } from "@/data/images";
 import { site } from "@/data/site";
 
@@ -20,15 +21,19 @@ export function UaePresence() {
               className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-plum-950/40 via-transparent to-transparent" />
+            <span className="absolute top-[38%] left-[46%] flex size-3">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold-400 opacity-75" />
+              <span className="relative inline-flex size-3 rounded-full bg-gold-500" />
+            </span>
           </div>
         </Reveal>
 
         <div className="lg:col-span-6">
           <Reveal>
             <Eyebrow tone="dark">Supplying premium berries across the UAE</Eyebrow>
-            <h2 className="mt-4 max-w-lg font-serif text-4xl leading-tight text-plum-950 text-balance md:text-5xl">
+            <SplitReveal as="h2" type="words" className="mt-4 max-w-lg font-serif text-4xl leading-tight text-plum-950 text-balance md:text-5xl">
               Proudly rooted in Dubai.
-            </h2>
+            </SplitReveal>
             <p className="mt-5 max-w-md text-sm leading-relaxed text-plum-950/65">
               Operating from the Dubai International Fruit &amp; Vegetable Market, Berrymount
               supplies premium berries to retailers, hotels, restaurants and cafés across the

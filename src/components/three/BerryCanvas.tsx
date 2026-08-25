@@ -1,21 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { BerryScene } from "./BerryScene";
 import { useActiveWhenVisible } from "@/hooks/useActiveWhenVisible";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 export function BerryCanvas({ scrollProgress }: { scrollProgress: React.RefObject<number> }) {
   const { ref, active } = useActiveWhenVisible<HTMLDivElement>();
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const reducedMotion = usePrefersReducedMotion();
   const containerRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReducedMotion(mq.matches);
-    const onChange = () => setReducedMotion(mq.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
 
   return (
     <div

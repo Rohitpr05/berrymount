@@ -51,7 +51,6 @@ export function BerryScene({
       camera={{ position: [0, 0, 6.2], fov: 38 }}
       frameloop={active ? "always" : "never"}
     >
-      <color attach="background" args={["#00000000"]} />
       <ambientLight intensity={0.45} color="#5b3a66" />
       <directionalLight position={[3, 4, 5]} intensity={2.4} color="#f3d9a8" />
       <directionalLight position={[-4, -1, -2]} intensity={0.9} color="#6f4dd6" />

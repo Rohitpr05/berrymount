@@ -1,20 +1,33 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { mainNav } from "@/data/nav";
 import { Logo } from "./Logo";
 import { MobileMenu } from "./MobileMenu";
 import { Button } from "@/components/ui/Button";
+import { Magnetic } from "@/components/motion/Magnetic";
 import { cn } from "@/lib/utils";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const lastY = useRef(0);
   const pathname = usePathname();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 24);
+
+      const header = headerRef.current;
+      if (header) {
+        const goingDown = y > lastY.current && y > 160;
+        header.style.transform = goingDown ? "translateY(-100%)" : "translateY(0)";
+      }
+      lastY.current = y;
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -22,9 +35,12 @@ export function Header() {
 
   return (
     <header
+      ref={headerRef}
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-500",
-        scrolled ? "bg-plum-950/90 py-3 shadow-lg shadow-plum-950/20 backdrop-blur-md" : "bg-transparent py-5",
+        "fixed inset-x-0 top-0 z-50 transition-[transform,background-color,box-shadow,padding,border-color] duration-500",
+        scrolled
+          ? "border-b border-cream-50/10 bg-plum-950/80 py-3 shadow-lg shadow-plum-950/20 backdrop-blur-xl"
+          : "border-b border-transparent bg-transparent py-5",
       )}
     >
       <div className="mx-auto flex w-full max-w-(--container-page) items-center justify-between px-6 md:px-10 lg:px-14">
@@ -50,9 +66,11 @@ export function Header() {
         </nav>
 
         <div className="hidden md:block">
-          <Button href="/wholesale" variant="gold">
-            Partner With Us
-          </Button>
+          <Magnetic>
+            <Button href="/wholesale" variant="gold">
+              Partner With Us
+            </Button>
+          </Magnetic>
         </div>
 
         <MobileMenu />
